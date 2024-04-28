@@ -83,6 +83,50 @@ def calculate_f1_scores(file_path, dataset='test'):
     overall_f1_score_before_merge = f1_score(y_true, y_pred, average='weighted')
     print(f"Overall F1 Score: {overall_f1_score_before_merge}")
 
+def calculate_f1_scores_categories(file_path, dataset='test'):
+    """
+    Calculate F1 scores for True Offensive, True Neither, Predicted Offensive, and Predicted Neither categories.
+
+    Args:
+    file_path (str): The path to the CSV file.
+    dataset (str): The name of the dataset.
+
+    Returns:
+    None
+    """
+    true_offensive = []
+    true_neither = []
+    pred_offensive = []
+    pred_neither = []
+
+    with open(file_path, newline='', encoding='utf-8') as csvfile:
+        csv_reader = csv.DictReader(csvfile)
+        for row in csv_reader:
+            try:
+                class_label = int(row['class'])
+                tweet = row['text']
+
+                # Assuming you have a function classify_tweet that returns predicted class
+                predicted_class, _ = classify_text(tweet)
+
+                if class_label == 1:  # Offensive
+                    true_offensive.append(class_label)
+                    pred_offensive.append(predicted_class)
+                else:  # Neither
+                    true_neither.append(class_label)
+                    pred_neither.append(predicted_class)
+            except (UnicodeDecodeError, ValueError) as e:
+                pass
+
+    # Calculate F1 scores
+    f1_score_offensive = f1_score(true_offensive, pred_offensive)
+    f1_score_neither = f1_score(true_neither, pred_neither)
+
+    # Print the F1 scores
+    print(f"{dataset} F1 Scores:")
+    print("True Offensive:", f1_score_offensive)
+    print("True Neither:", f1_score_neither)
+
 
 def remove_non_utf8_chars(input_string):
     return input_string.encode('utf-8', 'ignore').decode('utf-8')
@@ -95,9 +139,10 @@ def save_output_file(output_file_path, content):
 
 if __name__ == "__main__":
     # calculate_f1_scores('sample1.csv', "sample 1")
-    print("----------------------------------")
-    calculate_f1_scores('samples/sample1.csv', "sample 1")
-    print("----------------------------------")
-    calculate_f1_scores('samples/sample2.csv', "sample 2")
-    print("----------------------------------")
-    calculate_f1_scores('samples/sample3.csv', "sample 3")
+    # print("----------------------------------")
+    calculate_f1_scores('samples/sample3.csv', "sample 1")
+    # calculate_f1_scores_categories('samples/sample1.csv', "sample 2")
+    # print("----------------------------------")
+    # calculate_f1_scores('samples/sample2.csv', "sample 2")
+    # print("----------------------------------")
+    # calculate_f1_scores('samples/sample3.csv', "sample 3")

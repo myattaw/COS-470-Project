@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np  # Add this import for handling NaN values
 
 # Step 1: Load and preprocess data
-data = pd.read_csv('merged_file.csv')
+data = pd.read_csv('tweet_data.csv')
 
 # Remove rows with missing values in the 'class' column
 data = data.dropna(subset=['class'])
@@ -25,7 +25,7 @@ class CustomDataset(Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        text = str(self.data.iloc[idx]['tweet'])
+        text = str(self.data.iloc[idx]['message'])
         inputs = self.tokenizer.encode_plus(
             text,
             add_special_tokens=True,
